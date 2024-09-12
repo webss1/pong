@@ -12,14 +12,35 @@
             height: 100vh;
             margin: 0;
             background: #000;
+            position: relative;
         }
         canvas {
             border: 1px solid red;
+        }
+        /* Knapp i høyre hjørne */
+        .helg-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+        }
+        .helg-button:hover {
+            background-color: darkred;
         }
     </style>
 </head>
 <body>
     <canvas id="pongCanvas" width="650" height="400"></canvas>
+    
+    <!-- Knappen som sender deg til Snart Helg -->
+    <button class="helg-button" onclick="window.location.href='https://webss1.github.io/Snart-Helg/'">Snart Helg</button>
+    
     <script src="pong.js"></script>
 </body>
 </html>
