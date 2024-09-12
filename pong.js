@@ -50,7 +50,7 @@ function draw() {
     ctx.font = '18px Arial';
     ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
-    ctx.fillText('Venstre bruker W & S. Høyre bruker Pil venstre og Pil høyre', canvas.width / 2, canvas.height - 10);
+    ctx.fillText('Venstre bruker W & S. Høyre bruker Pil opp og Pil ned', canvas.width / 2, canvas.height - 10);
 
     // Vise vinnerbeskjed hvis ballen har truffet en vegg
     if (winnerMessage) {
@@ -131,10 +131,10 @@ document.addEventListener('keydown', function(event) {
         case 's':
             leftPaddle.dy = paddleSpeed;
             break;
-        case 'ArrowLeft':
+        case 'ArrowLeft': // Endret til ArrowUp
             rightPaddle.dy = -paddleSpeed;
             break;
-        case 'ArrowRight':
+        case 'ArrowRight': // Endret til ArrowDown
             rightPaddle.dy = paddleSpeed;
             break;
     }
@@ -146,8 +146,8 @@ document.addEventListener('keyup', function(event) {
         case 's':
             leftPaddle.dy = 0;
             break;
-        case 'ArrowLeft':
-        case 'ArrowRight':
+        case 'ArrowLeft': // Endret til ArrowUp
+        case 'ArrowRight': // Endret til ArrowDown
             rightPaddle.dy = 0;
             break;
     }
@@ -161,3 +161,4 @@ function gameLoop() {
 }
 
 gameLoop();
+
