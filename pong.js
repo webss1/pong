@@ -50,7 +50,7 @@ function draw() {
     ctx.font = '18px Arial';
     ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
-    ctx.fillText('Venstre bruker W & S. Høyre bruker Pil opp og Pil ned', canvas.width / 2, canvas.height - 10);
+    ctx.fillText('Venstre bruker W & S. Høyre bruker Pil Venstre og Pil Høyre', canvas.width / 2, canvas.height - 10);
 
     // Vise vinnerbeskjed hvis ballen har truffet en vegg
     if (winnerMessage) {
