@@ -6,8 +6,8 @@ const PADDLE_WIDTH = 10;
 const PADDLE_HEIGHT = 100;
 const BALL_SIZE = 10;
 const PADDLE_SPEED = 4;
-const BALL_SPEED_X = 5;
-const BALL_SPEED_Y = 3;
+const BALL_SPEED_X = 3;
+const BALL_SPEED_Y = 2;
 
 let gameMode = null; // Ingen spillmodus valgt ennå
 
@@ -22,13 +22,27 @@ function hideMenu() {
 
 document.getElementById('onePlayer').addEventListener('click', () => {
     gameMode = '1';
+    setGameSpeeds(1);
     startGame();
 });
 
 document.getElementById('twoPlayers').addEventListener('click', () => {
     gameMode = '2';
+    setGameSpeeds(2);
     startGame();
 });
+
+function setGameSpeeds(mode) {
+    if (mode === '1') {
+        ball.speedX = BALL_SPEED_X * 1.5; // Øk ballhastigheten for 1 spiller
+        ball.speedY = BALL_SPEED_Y * 1.5;
+        paddle.speed = PADDLE_SPEED * 1.5; // Øk paddlehastigheten for 1 spiller
+    } else {
+        ball.speedX = BALL_SPEED_X;
+        ball.speedY = BALL_SPEED_Y;
+        paddle.speed = PADDLE_SPEED;
+    }
+}
 
 // Spillfunksjoner
 function startGame() {
@@ -40,8 +54,8 @@ function startGame() {
 function resetBall() {
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
-    ball.speedX = BALL_SPEED_X * (Math.random() > 0.5 ? 1 : -1);
-    ball.speedY = BALL_SPEED_Y * (Math.random() > 0.5 ? 1 : -1);
+    ball.speedX = (gameMode === '1' ? BALL_SPEED_X * 1.5 : BALL_SPEED_X) * (Math.random() > 0.5 ? 1 : -1);
+    ball.speedY = (gameMode === '1' ? BALL_SPEED_Y * 1.5 : BALL_SPEED_Y) * (Math.random() > 0.5 ? 1 : -1);
 }
 
 const paddle = {
@@ -175,4 +189,3 @@ document.addEventListener('keyup', (event) => {
 
 // Vis menyen når siden lastes
 showMenu();
-
