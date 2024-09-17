@@ -11,40 +11,28 @@ const BALL_SPEED_Y = 3;
 
 let gameMode = null; // Ingen spillmodus valgt ennå
 
-// Spiller valgmuligheter
+// Menyfunksjoner
 function showMenu() {
-    const menu = document.createElement('div');
-    menu.classList.add('menu');
-    menu.style.position = 'absolute';
-    menu.style.top = '50%';
-    menu.style.left = '50%';
-    menu.style.transform = 'translate(-50%, -50%)';
-    menu.style.textAlign = 'center';
-    menu.style.color = '#fff';
-
-    menu.innerHTML = `
-        <h1>Pong</h1>
-        <button id="onePlayer">1 Spiller</button>
-        <button id="twoPlayers">2 Spillere</button>
-    `;
-    document.body.appendChild(menu);
-
-    document.getElementById('onePlayer').addEventListener('click', () => {
-        gameMode = '1';
-        startGame();
-    });
-    document.getElementById('twoPlayers').addEventListener('click', () => {
-        gameMode = '2';
-        startGame();
-    });
+    document.getElementById('menu').style.display = 'block';
 }
 
-// Start spillet
+function hideMenu() {
+    document.getElementById('menu').style.display = 'none';
+}
+
+document.getElementById('onePlayer').addEventListener('click', () => {
+    gameMode = '1';
+    startGame();
+});
+
+document.getElementById('twoPlayers').addEventListener('click', () => {
+    gameMode = '2';
+    startGame();
+});
+
+// Spillfunksjoner
 function startGame() {
-    const menu = document.querySelector('.menu');
-    if (menu) {
-        menu.style.display = 'none';
-    }
+    hideMenu();
     resetBall();
     requestAnimationFrame(gameLoop);
 }
@@ -187,6 +175,4 @@ document.addEventListener('keyup', (event) => {
 
 // Vis menyen når siden lastes
 showMenu();
-
-
 
