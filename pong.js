@@ -1,189 +1,166 @@
 const canvas = document.getElementById('pongCanvas');
 const ctx = canvas.getContext('2d');
 
-// Konstant for paddle og ball
-const paddleWidth = 10;
-const paddleHeight = 100;
-const ballSize = 10;
-const paddleSpeed = 4;
-const ballSpeed = 4;
+// Konstanter
+const PADDLE_WIDTH = 10;
+const PADDLE_HEIGHT = 100;
+const BALL_SIZE = 10;
+const PADDLE_SPEED = 4;
+const BALL_SPEED_X = 5;
+const BALL_SPEED_Y = 3;
 
-// Paddle og ball
-const leftPaddle = { x: 0, y: canvas.height / 2 - paddleHeight / 2, width: paddleWidth, height: paddleHeight, dy: 0 };
-const rightPaddle = { x: canvas.width - paddleWidth, y: canvas.height / 2 - paddleHeight / 2, width: paddleWidth, height: paddleHeight, dy: 0 };
-const ball = { x: canvas.width / 2, y: canvas.height / 2, radius: ballSize / 2, dx: ballSpeed, dy: ballSpeed };
+let gameMode = '2'; // Standard til 2 spillere
 
-// Poengsystem
-let leftScore = 0;
-let rightScore = 0;
-let winnerMessage = ""; // For å vise hvilken side som vant
-let gamePaused = false; // Variabel for å pause spillet etter et mål
-let isSinglePlayer = false; // For å sjekke om det er 1-spiller eller 2-spiller modus
+function startGame(mode) {
+    gameMode = mode;
+    document.querySelector('.menu').style.display = 'none';
+    requestAnimationFrame(gameLoop);
+}
 
-// Tegn paddle, ball, poeng og beskjed
+function resetBall() {
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height / 2;
+    ball.speedX = BALL_SPEED_X * (Math.random() > 0.5 ? 1 : -1);
+    ball.speedY = BALL_SPEED_Y * (Math.random() > 0.5 ? 1 : -1);
+}
+
+const paddle = {
+    width: PADDLE_WIDTH,
+    height: PADDLE_HEIGHT,
+    x: 0,
+    y: canvas.height / 2 - PADDLE_HEIGHT / 2,
+    speed: PADDLE_SPEED
+};
+
+const paddle2 = {
+    width: PADDLE_WIDTH,
+    height: PADDLE_HEIGHT,
+    x: canvas.width - PADDLE_WIDTH,
+    y: canvas.height / 2 - PADDLE_HEIGHT / 2,
+    speed: PADDLE_SPEED
+};
+
+const ball = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    size: BALL_SIZE,
+    speedX: BALL_SPEED_X,
+    speedY: BALL_SPEED_Y
+};
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Venstre paddle (rød)
-    ctx.fillStyle = 'red';
-    ctx.fillRect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
-
-    // Høyre paddle (rød)
-    ctx.fillStyle = 'red';
-    ctx.fillRect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
-
-    // Ball (rød)
-    if (!gamePaused) {
-        ctx.beginPath();
-        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-        ctx.fillStyle = 'red';
-        ctx.fill();
-        ctx.closePath();
-    }
-
-    // Poeng
-    ctx.font = '24px Arial';
+    
+    // Tegn padlene
     ctx.fillStyle = '#fff';
-    ctx.textAlign = 'center';
-    ctx.fillText('Venstre: ' + leftScore, canvas.width / 4, 30);
-    ctx.fillText('Høyre: ' + rightScore, 3 * canvas.width / 4, 30);
+    ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+    ctx.fillRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
 
-    // Beskjed utenfor boksen
-    ctx.font = '18px Arial';
-    ctx.fillStyle = '#fff';
-    ctx.textAlign = 'center';
-    ctx.fillText('Venstre bruker W & S. Høyre bruker Pil Opp og Pil Ned', canvas.width / 2, canvas.height - 10);
-
-    // Vise vinnerbeskjed hvis ballen har truffet en vegg
-    if (winnerMessage) {
-        ctx.font = '30px Arial';
-        ctx.fillStyle = '#fff';
-        ctx.fillText(winnerMessage, canvas.width / 2, canvas.height / 2);
-    }
+    // Tegn ballen
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.closePath();
 }
 
-// Oppdater ballposisjon og håndter poeng
 function update() {
-    if (gamePaused) return; // Hvis spillet er pauset, ikke oppdater
+    ball.x += ball.speedX;
+    ball.y += ball.speedY;
 
-    ball.x += ball.dx;
-    ball.y += ball.dy;
-
-    // Kollisjon med toppen og bunnen av skjermen
-    if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
-        ball.dy *= -1;
+    // Kollisjon med tak og gulv
+    if (ball.y - ball.size < 0 || ball.y + ball.size > canvas.height) {
+        ball.speedY = -ball.speedY;
     }
 
-    // Kollisjon med paddles
-    if (ball.x - ball.radius < leftPaddle.x + leftPaddle.width && ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height) {
-        ball.dx *= -1;
+    // Kollisjon med padlene
+    if (
+        ball.x - ball.size < paddle.x + paddle.width &&
+        ball.y > paddle.y &&
+        ball.y < paddle.y + paddle.height ||
+        ball.x + ball.size > paddle2.x &&
+        ball.y > paddle2.y &&
+        ball.y < paddle2.y + paddle2.height
+    ) {
+        ball.speedX = -ball.speedX;
     }
 
-    if (ball.x + ball.radius > rightPaddle.x && ball.y > rightPaddle.y && ball.y < rightPaddle.y + rightPaddle.height) {
-        ball.dx *= -1;
+    // Ball ut av spillområdet
+    if (ball.x - ball.size < 0 || ball.x + ball.size > canvas.width) {
+        resetBall();
     }
 
-    // Ball utenfor skjermen - bestem vinner
-    if (ball.x - ball.radius < 0) {
-        rightScore++; // Høyre spiller vinner
-        displayWinnerMessage('Høyre side vant!');
+    // Spiller 1 bevegelse (venstre padle)
+    if (upPressed && paddle.y > 0) {
+        paddle.y -= paddle.speed;
+    }
+    if (downPressed && paddle.y < canvas.height - paddle.height) {
+        paddle.y += paddle.speed;
     }
 
-    if (ball.x + ball.radius > canvas.width) {
-        leftScore++; // Venstre spiller vinner
-        displayWinnerMessage('Venstre side vant!');
+    // Spiller 2 bevegelse (høyre padle)
+    if (wPressed && paddle2.y > 0) {
+        paddle2.y -= paddle.speed;
+    }
+    if (sPressed && paddle2.y < canvas.height - paddle2.height) {
+        paddle2.y += paddle.speed;
     }
 
-    // Oppdater paddleposisjoner
-    leftPaddle.y += leftPaddle.dy;
-    rightPaddle.y += rightPaddle.dy;
-
-    // Begrensning av paddle-bevegelser
-    if (leftPaddle.y < 0) leftPaddle.y = 0;
-    if (leftPaddle.y + leftPaddle.height > canvas.height) leftPaddle.y = canvas.height - leftPaddle.height;
-    if (rightPaddle.y < 0) rightPaddle.y = 0;
-    if (rightPaddle.y + rightPaddle.height > canvas.height) rightPaddle.y = canvas.height - rightPaddle.height;
-
-    // AI-bevegelse for 1-spiller modus
-    if (isSinglePlayer) {
-        const aiSpeed = 2;
-        if (ball.y < rightPaddle.y + rightPaddle.height / 2) {
-            rightPaddle.y -= aiSpeed;
-        } else if (ball.y > rightPaddle.y + rightPaddle.height / 2) {
-            rightPaddle.y += aiSpeed;
+    // Enkel AI for 1-spiller modus
+    if (gameMode === '1') {
+        if (ball.y > paddle2.y + paddle2.height / 2) {
+            paddle2.y += paddle2.speed;
+        } else {
+            paddle2.y -= paddle2.speed;
         }
+        paddle2.y = Math.max(Math.min(paddle2.y, canvas.height - paddle2.height), 0);
     }
 }
 
-// Tilbakestill ballen til midten etter 5 sekunder og fjern meldingen
-function resetBall() {
-    setTimeout(() => {
-        ball.x = canvas.width / 2;
-        ball.y = canvas.height / 2;
-        ball.dx = ballSpeed * (Math.random() > 0.5 ? 1 : -1);
-        ball.dy = ballSpeed * (Math.random() > 0.5 ? 1 : -1);
-        winnerMessage = ""; // Fjern vinnerbeskjed
-        gamePaused = false; // Fortsett spillet
-    }, 5000); // 5 sekunder pause før spillet starter igjen
-}
-
-// Vis vinnerbeskjed og paus spill
-function displayWinnerMessage(message) {
-    winnerMessage = message;
-    gamePaused = true; // Pause spillet
-    resetBall(); // Tilbakestill ballen etter 5 sekunder
-}
-
-// Kontroller paddle-bevegelser (W/S for venstre, pil opp/ned for høyre)
-document.addEventListener('keydown', function(event) {
-    switch(event.key) {
-        case 'w':
-            leftPaddle.dy = -paddleSpeed;
-            break;
-        case 's':
-            leftPaddle.dy = paddleSpeed;
-            break;
-        case 'ArrowUp':
-            rightPaddle.dy = -paddleSpeed;
-            break;
-        case 'ArrowDown':
-            rightPaddle.dy = paddleSpeed;
-            break;
-    }
-});
-
-document.addEventListener('keyup', function(event) {
-    switch(event.key) {
-        case 'w':
-        case 's':
-            leftPaddle.dy = 0;
-            break;
-        case 'ArrowUp':
-        case 'ArrowDown':
-            rightPaddle.dy = 0;
-            break;
-    }
-});
-
-// Spill loop
 function gameLoop() {
     draw();
     update();
     requestAnimationFrame(gameLoop);
 }
 
-gameLoop();
+// Kontroller input
+let upPressed = false;
+let downPressed = false;
+let wPressed = false;
+let sPressed = false;
 
-// Funksjon for å sette spillmodus (1-spiller eller 2-spiller)
-function setGameMode(isSinglePlayerMode) {
-    isSinglePlayer = isSinglePlayerMode;
-    // Tilbakestill poeng, ball og paddles
-    leftScore = 0;
-    rightScore = 0;
-    ball.x = canvas.width / 2;
-    ball.y = canvas.height / 2;
-    ball.dx = ballSpeed * (Math.random() > 0.5 ? 1 : -1);
-    ball.dy = ballSpeed * (Math.random() > 0.5 ? 1 : -1);
-    winnerMessage = "";
-    gamePaused = false;
-}
+document.addEventListener('keydown', (event) => {
+    switch (event.code) {
+        case 'ArrowUp':
+            upPressed = true;
+            break;
+        case 'ArrowDown':
+            downPressed = true;
+            break;
+        case 'KeyW':
+            wPressed = true;
+            break;
+        case 'KeyS':
+            sPressed = true;
+            break;
+    }
+});
+
+document.addEventListener('keyup', (event) => {
+    switch (event.code) {
+        case 'ArrowUp':
+            upPressed = false;
+            break;
+        case 'ArrowDown':
+            downPressed = false;
+            break;
+        case 'KeyW':
+            wPressed = false;
+            break;
+        case 'KeyS':
+            sPressed = false;
+            break;
+    }
+});
+
+resetBall();
+
