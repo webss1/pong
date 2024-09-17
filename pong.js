@@ -204,4 +204,3 @@ document.addEventListener('keyup', (event) => {
 
 // Vis menyen når siden lastes
 showMenu();
-
