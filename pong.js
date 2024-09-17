@@ -6,8 +6,8 @@ const PADDLE_WIDTH = 10;
 const PADDLE_HEIGHT = 100;
 const BALL_SIZE = 10;
 const PADDLE_SPEED = 6;
-const BALL_SPEED_X = 3;
-const BALL_SPEED_Y = 2;
+const BALL_SPEED_X = 5;
+const BALL_SPEED_Y = 5;
 
 let gameMode = null; // Ingen spillmodus valgt ennå
 let ballSpeedX = BALL_SPEED_X;
