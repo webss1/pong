@@ -5,7 +5,7 @@ const ctx = canvas.getContext('2d');
 const PADDLE_WIDTH = 10;
 const PADDLE_HEIGHT = 100;
 const BALL_SIZE = 10;
-const PADDLE_SPEED = 4;
+const PADDLE_SPEED = 6;
 const BALL_SPEED_X = 3;
 const BALL_SPEED_Y = 2;
 
@@ -76,9 +76,9 @@ document.getElementById('redirectButton').addEventListener('click', () => {
 
 function setGameSpeeds(mode) {
     if (mode === '1') {
-        ballSpeedX = BALL_SPEED_X * 1.5; // Øk ballhastigheten for 1 spiller
-        ballSpeedY = BALL_SPEED_Y * 1.5;
-        paddleSpeed = PADDLE_SPEED * 1.5; // Øk paddlehastigheten for 1 spiller
+        ballSpeedX = BALL_SPEED_X * 3; // Øk ballhastigheten for 1 spiller
+        ballSpeedY = BALL_SPEED_Y * 3;
+        paddleSpeed = PADDLE_SPEED * 3; // Øk paddlehastigheten for 1 spiller
     } else {
         ballSpeedX = BALL_SPEED_X; // Normal ballhastighet for 2 spillere
         ballSpeedY = BALL_SPEED_Y;
