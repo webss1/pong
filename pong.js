@@ -10,14 +10,50 @@ const BALL_SPEED_X = 3;
 const BALL_SPEED_Y = 2;
 
 let gameMode = null; // Ingen spillmodus valgt ennå
+let ballSpeedX = BALL_SPEED_X;
+let ballSpeedY = BALL_SPEED_Y;
+let paddleSpeed = PADDLE_SPEED;
 
-// Menyfunksjoner
+const paddle = {
+    width: PADDLE_WIDTH,
+    height: PADDLE_HEIGHT,
+    x: 0,
+    y: canvas.height / 2 - PADDLE_HEIGHT / 2,
+    speed: paddleSpeed
+};
+
+const paddle2 = {
+    width: PADDLE_WIDTH,
+    height: PADDLE_HEIGHT,
+    x: canvas.width - PADDLE_WIDTH,
+    y: canvas.height / 2 - PADDLE_HEIGHT / 2,
+    speed: paddleSpeed
+};
+
+const ball = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    size: BALL_SIZE,
+    speedX: ballSpeedX,
+    speedY: ballSpeedY
+};
+
 function showMenu() {
     document.getElementById('menu').style.display = 'block';
 }
 
 function hideMenu() {
     document.getElementById('menu').style.display = 'none';
+}
+
+function showMessage(message) {
+    const messageDiv = document.getElementById('message');
+    messageDiv.textContent = message;
+    messageDiv.style.display = 'block';
+    setTimeout(() => {
+        messageDiv.style.display = 'none';
+        resetBall();
+    }, 2000); // Vis meldingen i 2 sekunder
 }
 
 document.getElementById('onePlayer').addEventListener('click', () => {
@@ -34,17 +70,18 @@ document.getElementById('twoPlayers').addEventListener('click', () => {
 
 function setGameSpeeds(mode) {
     if (mode === '1') {
-        ball.speedX = BALL_SPEED_X * 1.5; // Øk ballhastigheten for 1 spiller
-        ball.speedY = BALL_SPEED_Y * 1.5;
-        paddle.speed = PADDLE_SPEED * 1.5; // Øk paddlehastigheten for 1 spiller
+        ballSpeedX = BALL_SPEED_X * 1.5; // Øk ballhastigheten for 1 spiller
+        ballSpeedY = BALL_SPEED_Y * 1.5;
+        paddleSpeed = PADDLE_SPEED * 1.5; // Øk paddlehastigheten for 1 spiller
     } else {
-        ball.speedX = BALL_SPEED_X;
-        ball.speedY = BALL_SPEED_Y;
-        paddle.speed = PADDLE_SPEED;
+        ballSpeedX = BALL_SPEED_X; // Normal ballhastighet for 2 spillere
+        ballSpeedY = BALL_SPEED_Y;
+        paddleSpeed = PADDLE_SPEED; // Normal paddlehastighet for 2 spillere
     }
+    paddle.speed = paddleSpeed;
+    paddle2.speed = paddleSpeed;
 }
 
-// Spillfunksjoner
 function startGame() {
     hideMenu();
     resetBall();
@@ -54,33 +91,9 @@ function startGame() {
 function resetBall() {
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
-    ball.speedX = (gameMode === '1' ? BALL_SPEED_X * 1.5 : BALL_SPEED_X) * (Math.random() > 0.5 ? 1 : -1);
-    ball.speedY = (gameMode === '1' ? BALL_SPEED_Y * 1.5 : BALL_SPEED_Y) * (Math.random() > 0.5 ? 1 : -1);
+    ball.speedX = ballSpeedX * (Math.random() > 0.5 ? 1 : -1);
+    ball.speedY = ballSpeedY * (Math.random() > 0.5 ? 1 : -1);
 }
-
-const paddle = {
-    width: PADDLE_WIDTH,
-    height: PADDLE_HEIGHT,
-    x: 0,
-    y: canvas.height / 2 - PADDLE_HEIGHT / 2,
-    speed: PADDLE_SPEED
-};
-
-const paddle2 = {
-    width: PADDLE_WIDTH,
-    height: PADDLE_HEIGHT,
-    x: canvas.width - PADDLE_WIDTH,
-    y: canvas.height / 2 - PADDLE_HEIGHT / 2,
-    speed: PADDLE_SPEED
-};
-
-const ball = {
-    x: canvas.width / 2,
-    y: canvas.height / 2,
-    size: BALL_SIZE,
-    speedX: BALL_SPEED_X,
-    speedY: BALL_SPEED_Y
-};
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -114,8 +127,10 @@ function update() {
         ball.speedX = -ball.speedX;
     }
 
-    if (ball.x - ball.size < 0 || ball.x + ball.size > canvas.width) {
-        resetBall();
+    if (ball.x - ball.size < 0) {
+        showMessage("Høyre siden vant");
+    } else if (ball.x + ball.size > canvas.width) {
+        showMessage("Venstre siden vant");
     }
 
     if (upPressed && paddle.y > 0) {
@@ -189,3 +204,4 @@ document.addEventListener('keyup', (event) => {
 
 // Vis menyen når siden lastes
 showMenu();
+
