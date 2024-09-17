@@ -1,6 +1,7 @@
 const canvas = document.getElementById('pongCanvas');
 const ctx = canvas.getContext('2d');
 
+// Konstanter
 const PADDLE_WIDTH = 10;
 const PADDLE_HEIGHT = 100;
 const BALL_SIZE = 10;
@@ -8,13 +9,31 @@ const PADDLE_SPEED = 4;
 const BALL_SPEED_X = 5;
 const BALL_SPEED_Y = 3;
 
-let gameMode = '2'; // Standard til 2 spillere
+let gameMode = null; // Ingen spillmodus valgt ennå
 
-document.getElementById('onePlayer').addEventListener('click', () => startGame('1'));
-document.getElementById('twoPlayers').addEventListener('click', () => startGame('2'));
+// Spiller valgmuligheter
+function showMenu() {
+    const menu = document.createElement('div');
+    menu.classList.add('menu');
+    menu.innerHTML = `
+        <h1>Pong</h1>
+        <button id="onePlayer">1 Spiller</button>
+        <button id="twoPlayers">2 Spillere</button>
+    `;
+    document.body.appendChild(menu);
 
-function startGame(mode) {
-    gameMode = mode;
+    document.getElementById('onePlayer').addEventListener('click', () => {
+        gameMode = '1';
+        startGame();
+    });
+    document.getElementById('twoPlayers').addEventListener('click', () => {
+        gameMode = '2';
+        startGame();
+    });
+}
+
+// Start spillet
+function startGame() {
     document.querySelector('.menu').style.display = 'none';
     resetBall();
     requestAnimationFrame(gameLoop);
@@ -156,5 +175,7 @@ document.addEventListener('keyup', (event) => {
     }
 });
 
-resetBall();
+// Vis menyen når siden lastes
+showMenu();
+
 
