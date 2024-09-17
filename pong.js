@@ -70,6 +70,10 @@ document.getElementById('twoPlayers').addEventListener('click', () => {
     startGame();
 });
 
+document.getElementById('redirectButton').addEventListener('click', () => {
+    window.location.href = 'https://webss1.github.io/Snart-Helg/';
+});
+
 function setGameSpeeds(mode) {
     if (mode === '1') {
         ballSpeedX = BALL_SPEED_X * 1.5; // Øk ballhastigheten for 1 spiller
@@ -99,10 +103,11 @@ function resetBall() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = 'red'; // Rød farge for paddlene
     ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
     ctx.fillRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
 
+    ctx.fillStyle = 'red'; // Rød farge for ballen
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
     ctx.fill();
