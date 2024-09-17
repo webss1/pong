@@ -15,6 +15,13 @@ let gameMode = null; // Ingen spillmodus valgt ennå
 function showMenu() {
     const menu = document.createElement('div');
     menu.classList.add('menu');
+    menu.style.position = 'absolute';
+    menu.style.top = '50%';
+    menu.style.left = '50%';
+    menu.style.transform = 'translate(-50%, -50%)';
+    menu.style.textAlign = 'center';
+    menu.style.color = '#fff';
+
     menu.innerHTML = `
         <h1>Pong</h1>
         <button id="onePlayer">1 Spiller</button>
@@ -34,7 +41,10 @@ function showMenu() {
 
 // Start spillet
 function startGame() {
-    document.querySelector('.menu').style.display = 'none';
+    const menu = document.querySelector('.menu');
+    if (menu) {
+        menu.style.display = 'none';
+    }
     resetBall();
     requestAnimationFrame(gameLoop);
 }
@@ -114,10 +124,10 @@ function update() {
     }
 
     if (wPressed && paddle2.y > 0) {
-        paddle2.y -= paddle.speed;
+        paddle2.y -= paddle2.speed;
     }
     if (sPressed && paddle2.y < canvas.height - paddle2.height) {
-        paddle2.y += paddle.speed;
+        paddle2.y += paddle2.speed;
     }
 
     if (gameMode === '1') {
@@ -177,5 +187,6 @@ document.addEventListener('keyup', (event) => {
 
 // Vis menyen når siden lastes
 showMenu();
+
 
 
