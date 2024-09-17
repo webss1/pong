@@ -1,7 +1,6 @@
 const canvas = document.getElementById('pongCanvas');
 const ctx = canvas.getContext('2d');
 
-// Konstanter
 const PADDLE_WIDTH = 10;
 const PADDLE_HEIGHT = 100;
 const BALL_SIZE = 10;
@@ -11,9 +10,13 @@ const BALL_SPEED_Y = 3;
 
 let gameMode = '2'; // Standard til 2 spillere
 
+document.getElementById('onePlayer').addEventListener('click', () => startGame('1'));
+document.getElementById('twoPlayers').addEventListener('click', () => startGame('2'));
+
 function startGame(mode) {
     gameMode = mode;
     document.querySelector('.menu').style.display = 'none';
+    resetBall();
     requestAnimationFrame(gameLoop);
 }
 
@@ -50,13 +53,11 @@ const ball = {
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Tegn padlene
+
     ctx.fillStyle = '#fff';
     ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
     ctx.fillRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
 
-    // Tegn ballen
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
     ctx.fill();
@@ -67,29 +68,25 @@ function update() {
     ball.x += ball.speedX;
     ball.y += ball.speedY;
 
-    // Kollisjon med tak og gulv
     if (ball.y - ball.size < 0 || ball.y + ball.size > canvas.height) {
         ball.speedY = -ball.speedY;
     }
 
-    // Kollisjon med padlene
     if (
-        ball.x - ball.size < paddle.x + paddle.width &&
-        ball.y > paddle.y &&
-        ball.y < paddle.y + paddle.height ||
-        ball.x + ball.size > paddle2.x &&
-        ball.y > paddle2.y &&
-        ball.y < paddle2.y + paddle2.height
+        (ball.x - ball.size < paddle.x + paddle.width &&
+         ball.y > paddle.y &&
+         ball.y < paddle.y + paddle.height) ||
+        (ball.x + ball.size > paddle2.x &&
+         ball.y > paddle2.y &&
+         ball.y < paddle2.y + paddle2.height)
     ) {
         ball.speedX = -ball.speedX;
     }
 
-    // Ball ut av spillområdet
     if (ball.x - ball.size < 0 || ball.x + ball.size > canvas.width) {
         resetBall();
     }
 
-    // Spiller 1 bevegelse (venstre padle)
     if (upPressed && paddle.y > 0) {
         paddle.y -= paddle.speed;
     }
@@ -97,7 +94,6 @@ function update() {
         paddle.y += paddle.speed;
     }
 
-    // Spiller 2 bevegelse (høyre padle)
     if (wPressed && paddle2.y > 0) {
         paddle2.y -= paddle.speed;
     }
@@ -105,7 +101,6 @@ function update() {
         paddle2.y += paddle.speed;
     }
 
-    // Enkel AI for 1-spiller modus
     if (gameMode === '1') {
         if (ball.y > paddle2.y + paddle2.height / 2) {
             paddle2.y += paddle2.speed;
@@ -122,7 +117,6 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// Kontroller input
 let upPressed = false;
 let downPressed = false;
 let wPressed = false;
