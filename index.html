@@ -14,16 +14,18 @@
             background-color: #000;
             color: #fff;
             font-family: Arial, sans-serif;
+            overflow: hidden;
         }
         canvas {
             border: 1px solid #fff;
         }
         #menu {
             position: absolute;
-            top: 50%;
+            top: 20px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             text-align: center;
+            z-index: 10;
         }
         #menu button {
             display: block;
@@ -47,6 +49,8 @@
         <button id="twoPlayers">2 Spillere</button>
     </div>
     <canvas id="pongCanvas" width="800" height="600"></canvas>
-    <script src="pong.js"></script>
+    <script src="game.js"></script>
 </body>
+</html>
+
 </html>
