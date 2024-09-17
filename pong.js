@@ -59,12 +59,14 @@ function showMessage(message) {
 document.getElementById('onePlayer').addEventListener('click', () => {
     gameMode = '1';
     setGameSpeeds(1);
+    hideMenu();
     startGame();
 });
 
 document.getElementById('twoPlayers').addEventListener('click', () => {
     gameMode = '2';
     setGameSpeeds(2);
+    hideMenu();
     startGame();
 });
 
@@ -83,7 +85,6 @@ function setGameSpeeds(mode) {
 }
 
 function startGame() {
-    hideMenu();
     resetBall();
     requestAnimationFrame(gameLoop);
 }
@@ -133,18 +134,18 @@ function update() {
         showMessage("Venstre siden vant");
     }
 
-    if (upPressed && paddle.y > 0) {
-        paddle.y -= paddle.speed;
-    }
-    if (downPressed && paddle.y < canvas.height - paddle.height) {
-        paddle.y += paddle.speed;
-    }
-
-    if (wPressed && paddle2.y > 0) {
+    if (upPressed && paddle2.y > 0) {
         paddle2.y -= paddle2.speed;
     }
-    if (sPressed && paddle2.y < canvas.height - paddle2.height) {
+    if (downPressed && paddle2.y < canvas.height - paddle2.height) {
         paddle2.y += paddle2.speed;
+    }
+
+    if (wPressed && paddle.y > 0) {
+        paddle.y -= paddle.speed;
+    }
+    if (sPressed && paddle.y < canvas.height - paddle.height) {
+        paddle.y += paddle.speed;
     }
 
     if (gameMode === '1') {
@@ -204,3 +205,4 @@ document.addEventListener('keyup', (event) => {
 
 // Vis menyen når siden lastes
 showMenu();
+
