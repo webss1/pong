@@ -13,9 +13,11 @@
             margin: 0;
             background: #000;
             position: relative;
+            flex-direction: column;
         }
         canvas {
             border: 1px solid red;
+            display: none; /* Gjør canvas usynlig til spillmodus er valgt */
         }
         /* Knapp i høyre hjørne */
         .helg-button {
@@ -33,14 +35,64 @@
         .helg-button:hover {
             background-color: darkred;
         }
+        /* Knappene for valg av spillmodus */
+        .mode-button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.5em;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            margin: 10px;
+        }
+        .mode-button:hover {
+            background-color: darkred;
+        }
+        .mode-select {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Canvas for Pong-spillet -->
     <canvas id="pongCanvas" width="650" height="400"></canvas>
     
     <!-- Knappen som sender deg til Snart Helg -->
     <button class="helg-button" onclick="window.location.href='https://webss1.github.io/Snart-Helg/'">Snart Helg</button>
-    
-    <script src="pong.js"></script>
+
+    <!-- Valg for spillmodus -->
+    <div class="mode-select" id="modeSelect">
+        <h1 style="color: white;">Velg Spillmodus</h1>
+        <button class="mode-button" onclick="startGame(1)">1 Spiller</button>
+        <button class="mode-button" onclick="startGame(2)">2 Spillere</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('pongCanvas');
+        const modeSelect = document.getElementById('modeSelect');
+
+        // Start spillet basert på valgt modus
+        function startGame(players) {
+            modeSelect.style.display = 'none'; // Skjul valget av spillmodus
+            canvas.style.display = 'block'; // Vis canvas for pong
+            if (players === 1) {
+                // Start 1-spiller modus
+                console.log("1-spiller modus valgt");
+                // Her kan du implementere AI eller noe for å styre den andre platen
+            } else {
+                // Start 2-spillere modus
+                console.log("2-spillere modus valgt");
+                // Start vanlig pong-spill for 2 spillere
+            }
+        }
+
+        // Last inn pong.js-funksjonaliteten når en spillmodus er valgt
+        // Du kan kalle dette skriptet for å starte spillet i henhold til valget
+    </script>
 </body>
 </html>
+
