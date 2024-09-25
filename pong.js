@@ -5,7 +5,7 @@ const ctx = canvas.getContext('2d');
 const PADDLE_WIDTH = 10;
 const PADDLE_HEIGHT = 100;
 const BALL_SIZE = 10;
-const PADDLE_SPEED = 69;
+const PADDLE_SPEED = 25;
 const BALL_SPEED_X = 10;
 const BALL_SPEED_Y = 10;
 
